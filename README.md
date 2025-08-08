@@ -8,7 +8,7 @@ https://www.cancerimagingarchive.net/collection/colorectal-liver-metastases/
 Prior to running the scripts you need to download the dataset:
 
 ``` sh
-opt/nbia-data-retriever/bin/nbia-data-retriever --cli /data/Colorectal-Liver-Metastases-November-2022-manifest.tcia -d ~/Downloads/TCIA
+/opt/nbia-data-retriever/bin/nbia-data-retriever --cli /data/Colorectal-Liver-Metastases-November-2022-manifest.tcia -d ~/Downloads/TCIA
 ```
 
 # Caveats
