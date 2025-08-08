@@ -111,6 +111,7 @@ def transform_volume_seg():
     volumeNode.SetAndObserveTransformNodeID(transformNode.GetID()) 
 
 def parcours_database(orientation,direction,magnitude):
+
     
     logic = slicer.util.getModuleLogic('SparseGridSimulation')
     simulation_params = logic.getParameterNode()
@@ -124,7 +125,7 @@ def parcours_database(orientation,direction,magnitude):
            0.985 : [2, 4, 7, 9, 16, 21, 23, 26, 28, 29, 34, 35, 36, 44, 47, 52, 54, 59, 66, 77, 78, 83, 85, 90, 92, 93, 95, 100, 102, 103, 117, 118, 121, 122, 137, 157, 164, 167, 169, 171, 182, 186, 189, 192],
            0.999 : [3, 5, 6, 12, 17, 25, 27, 30, 32, 40, 45, 46, 49, 51, 53, 56, 57, 58, 62, 63, 65, 67, 68, 71, 72, 74, 76, 79, 80, 81, 84, 86, 87, 89, 96, 98, 99, 104, 109, 114, 116, 120, 125, 127, 129, 130, 131,134, 136, 139, 141, 147, 152, 153, 154, 155, 160, 163, 168, 170, 173, 175, 177, 187, 188, 191, 193, 195, 197]}
     
-
+    simulation_params.gravityMagnitude = magnitude
     if i ==24:   #the file CRLM-CT-024 is missing from the TCIA database 
         return
         
@@ -170,5 +171,5 @@ def parcours_database(orientation,direction,magnitude):
         
 
 
-parcours_database(orientation="x",direction="up",magnitude=950)
-
+# parcours_database(orientation="x",direction="up",magnitude=950)
+parcours_database(orientation,direction,magnitude=950)
