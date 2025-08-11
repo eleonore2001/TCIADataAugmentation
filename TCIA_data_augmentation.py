@@ -158,7 +158,7 @@ def parcours_database(orientation,direction,magnitude):
 
         print("simulation begins")
         start_time = time.time()
-        while time.time() - start_time < 10:
+        while time.time() - start_time < 5:
             slicer.app.processEvents()
             time.sleep(0.1)  
 
@@ -172,4 +172,4 @@ def parcours_database(orientation,direction,magnitude):
 
 
 # parcours_database(orientation="x",direction="up",magnitude=950)
-parcours_database(orientation,direction,magnitude=950)
+parcours_database(orientation,direction,magnitude=500)
