@@ -10,16 +10,17 @@ import sys
 def save_scene(i,modifiedseg_filename, modifiedvolume_filename):  
 
     outputFolder = "/home/eleonore/Downloads/TCIA_Nifti/CRLM-CT-1" + str(i).zfill(3)
+    segmentationNode = slicer.mrmlScene.GetFirstNodeByClass("vtkMRMLSegmentationNode")
 
+    if first_time : 
     #that code is to save the non modified segmentation in a way that's easier to compare than to modified one 
     #the segmentation obtained thanks to the DICOM to NIFTI script is not so good (according to my knowledge at least !)
-    segmentationNode = slicer.mrmlScene.GetFirstNodeByClass("vtkMRMLSegmentationNode")
-    labelmapVolumeNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode")
-    slicer.modules.segmentations.logic().ExportAllSegmentsToLabelmapNode(segmentationNode, labelmapVolumeNode)
-    filename = "Segmentation_100.nii.gz"
-    filepath = os.path.join(outputFolder, filename)
-    os.makedirs(outputFolder, exist_ok=True)
-    slicer.util.saveNode(labelmapVolumeNode, filepath)
+        labelmapVolumeNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode")
+        slicer.modules.segmentations.logic().ExportAllSegmentsToLabelmapNode(segmentationNode, labelmapVolumeNode)
+        filename = "Segmentation_100.nii.gz"
+        filepath = os.path.join(outputFolder, filename)
+        os.makedirs(outputFolder, exist_ok=True)
+        slicer.util.saveNode(labelmapVolumeNode, filepath)
 
     segmentationNode.HardenTransform()
     labelmapVolumeNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode")
@@ -156,7 +157,6 @@ def parcours_database(orientation,direction,magnitude):
         run_sparsegrid(orientation,direction)
         transform_volume_seg()
 
-        print("simulation begins")
         start_time = time.time()
         while time.time() - start_time < 5:
             slicer.app.processEvents()
@@ -168,8 +168,17 @@ def parcours_database(orientation,direction,magnitude):
         newvolume_filename = "Volume_modified" + "_ "+ orientation + "_" + direction + "_" + str(magnitude) + ".nii.gz"
         save_scene(i,newseg_filename,newvolume_filename)
         slicer.mrmlScene.Clear(0)          
-        
 
 
 # parcours_database(orientation="x",direction="up",magnitude=950)
-parcours_database(orientation,direction,magnitude=500)
+parcours_database(orientation,direction,magnitude=700)
+
+
+
+
+
+
+
+
+
+
