@@ -7,7 +7,7 @@ L_orientation=("x" "y" "z")
 L_direction=("up" "down")
 
 # Loop from 1 to 199
-for i in {1..199}; do
+for i in {1..198}; do
     echo "Processing file index: $i"
 
     for orientation in "${L_orientation[@]}"; do
