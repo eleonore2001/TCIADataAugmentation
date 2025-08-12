@@ -7,7 +7,7 @@ L_orientation=("x" "y" "z")
 L_direction=("up" "down")
 
 # Loop from 1 to 198
-for i in {1..3}; do
+for i in {1..198}; do
     echo "Processing file index: $i"
     first_time=True 
 
