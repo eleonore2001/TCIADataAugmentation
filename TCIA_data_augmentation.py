@@ -5,7 +5,6 @@ import time
 import qt 
 import sys
 
-#this version of the script accepts as an input an index from the command line
 
 def save_scene(i,modifiedseg_filename, modifiedvolume_filename):  
 
@@ -97,6 +96,8 @@ def run_sparsegrid(orientation,direction):
     currentCenter = roiNode.GetCenter()
     heightDifference = (currentSize[2] - newHeight) / 2
     roiNode.SetCenter(currentCenter[0], currentCenter[1], currentCenter[2] - heightDifference)
+    #if you want to play with it a bit you just have to change where you add / substract the "heightDifference" parameter 
+
 
     sparseGrid.addSparseGridModelNode()
     sparseGrid.addGridTransformNode()
@@ -111,7 +112,7 @@ def transform_volume_seg():
     volumeNode = volumeNodes[0] 
     volumeNode.SetAndObserveTransformNodeID(transformNode.GetID()) 
 
-def parcours_database(orientation,direction,magnitude):
+def parcours_database(orientation,direction,magnitude,duration):
 
     
     logic = slicer.util.getModuleLogic('SparseGridSimulation')
@@ -158,7 +159,7 @@ def parcours_database(orientation,direction,magnitude):
         transform_volume_seg()
 
         start_time = time.time()
-        while time.time() - start_time < 5:
+        while time.time() - start_time < duration:
             slicer.app.processEvents()
             time.sleep(0.1)  
 
@@ -170,8 +171,7 @@ def parcours_database(orientation,direction,magnitude):
         slicer.mrmlScene.Clear(0)          
 
 
-# parcours_database(orientation="x",direction="up",magnitude=950)
-parcours_database(orientation,direction,magnitude=700)
+parcours_database(orientation,direction,magnitude,duration)
 
 
 
