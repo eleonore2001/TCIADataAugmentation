@@ -28,11 +28,11 @@ These are examples of how a volume and segmentations can be modified using these
 
 | Image 1 | Image 2 |
 |---------|---------|
-| ![alt text](image-1.png) | ![alt text](image-2.png) |
+| ![Image 1](./scripts/image-1.png) | ![Image 2](./scripts/image-2.png) |
 | **Original volume and segmentation** | **Deformation with a vector going towards right** |
 
 | Image 3 | Image 4 |
 |---------|---------|
-| ![alt text](image-3.png)| ![alt text](image-4.png)|
+| ![Image 3](./scripts/image-3.png)| ![Image 4](./scripts/image-4.png)|
 | **Deformation with a vector going towards left** | **Deformation with a vector going up** |
 
