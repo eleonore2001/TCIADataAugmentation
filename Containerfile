@@ -53,3 +53,8 @@ RUN curl -L https://github.com/QIICR/dcmqi/releases/download/v1.3.4/dcmqi-1.3.4-
 RUN mkdir -p /data && \
     cd /data && \
     curl -LO https://www.cancerimagingarchive.net/wp-content/uploads/Colorectal-Liver-Metastases-November-2022-manifest.tcia
+
+COPY run.sh /
+RUN chmod ug+x /run.sh
+
+ENTRYPOINT ["/run.sh"]

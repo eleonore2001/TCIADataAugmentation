@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 import os
 import subprocess
+import argparse
 
-# Path to your dataset root
-dataset_root = "/home/rafael/Downloads/CRLM/manifest-1669817128730/Colorectal-Liver-Metastases"
-
-# Output directory for NIfTI/NRRD files
-output_root = "/home/rafael/Downloads/CRLM/converted_files"  # Ensure this directory exists or will be created
 
 # Paths to executables
 dcm2niix_executable = "dcm2niix"  # Ensure dcm2niix is in your PATH
@@ -49,9 +45,26 @@ def convert_segmentation(seg_input_dir, output_dir, patient_id):
         print(f"Standard Output:\n{e.stdout.decode()}")
         print(f"Standard Error:\n{e.stderr.decode()}")
 
+
+# #################
+# ENTRY POINT
+# #################
+
+parser = argparse.ArgumentParser(
+                    prog='dcm_to_nii',
+                    description='Utility script for converting segmentations and volumes from DICOM to NIFTI',
+                    epilog='This is an internal tool and it is heavily reliant on the intended dataset to use. Use it with caution for other purposes')
+parser.add_argument('-i', '--input_dir', 'Directory containing the original dataset (DICOM)', required=True)
+parser.add_argument('-o', '--output_dir', 'Directory to write the conversion results', required=True)
+
+args = parser.parse_args()
+
+print("Input directory: ", args.input_dir)
+print("Output directory: ", args.output_dir)
+
 # Iterate over patient folders
-for patient_folder in sorted(os.listdir(dataset_root)):
-    patient_path = os.path.join(dataset_root, patient_folder)
+for patient_folder in sorted(os.listdir(args.input_dir)):
+    patient_path = os.path.join(args.input_dir, patient_folder)
     if not os.path.isdir(patient_path):
         continue
 
@@ -81,7 +94,7 @@ for patient_folder in sorted(os.listdir(dataset_root)):
                 volume_folder = series_path
                 print(f"Found volume folder: {volume_folder}")
 
-        output_dir = os.path.join(output_root, patient_folder)
+        output_dir = os.path.join(args.output_dir, patient_folder)
 
         if volume_folder:
             convert_volume(volume_folder, output_dir, patient_folder)
@@ -91,4 +104,4 @@ for patient_folder in sorted(os.listdir(dataset_root)):
         if segmentation_folder:
             convert_segmentation(segmentation_folder, output_dir, patient_folder)
         else:
-            print(f"No segmentation folder found for patient {patient_folder}")
+           print(f"No segmentation folder found for patient {patient_folder}")
