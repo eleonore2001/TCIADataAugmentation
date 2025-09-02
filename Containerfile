@@ -57,4 +57,6 @@ RUN mkdir -p /data && \
 COPY run.sh /
 RUN chmod ug+x /run.sh
 
+COPY scripts/TCIA_data_augmentation.py /
+
 ENTRYPOINT ["/run.sh"]
