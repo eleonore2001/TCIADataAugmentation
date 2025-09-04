@@ -116,59 +116,64 @@ def transform_volume_seg():
 # ENTRY POINT
 # ############################
 
-logic = slicer.util.getModuleLogic('SparseGridSimulation')
-simulation_params = logic.getParameterNode()
-
-sparseGrid_widget = slicer.util.getModuleWidget('SparseGridSimulation')
-dic = {0.890 : [8, 43, 123, 149, 198], 0.899 : [162], 0.966 : [176],  0.934 : [22,31] , 0.936 : [101], 0.970 : [73],
-        0.988 : [13, 88, 105, 135, 138, 146], 0.980 : [33, 60, 75, 82, 113, 132, 145, 156, 158, 166, 184],
-        0.982 : [14, 110, 124, 142, 148, 150, 151, 172, 183, 185],
-        0.978 : [15, 18, 50, 70, 97, 106, 107, 108, 112, 140, 143, 144, 165, 180, 194, 196],
-        0.975 : [1, 10, 11, 19, 20, 37, 38, 39, 41, 42, 48, 55, 61, 64, 69, 91, 94, 111, 115, 119, 126, 128, 133, 159, 161, 174, 178, 179, 181, 190],
-        0.985 : [2, 4, 7, 9, 16, 21, 23, 26, 28, 29, 34, 35, 36, 44, 47, 52, 54, 59, 66, 77, 78, 83, 85, 90, 92, 93, 95, 100, 102, 103, 117, 118, 121, 122, 137, 157, 164, 167, 169, 171, 182, 186, 189, 192],
-        0.999 : [3, 5, 6, 12, 17, 25, 27, 30, 32, 40, 45, 46, 49, 51, 53, 56, 57, 58, 62, 63, 65, 67, 68, 71, 72, 74, 76, 79, 80, 81, 84, 86, 87, 89, 96, 98, 99, 104, 109, 114, 116, 120, 125, 127, 129, 130, 131,134, 136, 139, 141, 147, 152, 153, 154, 155, 160, 163, 168, 170, 173, 175, 177, 187, 188, 191, 193, 195, 197]}
-
-simulation_params.gravityMagnitude = magnitude
-if i ==24:   #the file CRLM-CT-024 is missing from the TCIA database
-    return
-
-parentPath = "/home/eleonore/Downloads/TCIA/Colorectal-Liver-Metastases-November-2022-manifest/Colorectal-Liver-Metastases/CRLM-CT-1"
-parentPath += str(i).zfill(3)
-subfolders = [f for f in os.listdir(parentPath) if os.path.isdir(os.path.join(parentPath, f))]
-
-child_path = os.path.join(parentPath, subfolders[0])
-loadedNodeIDs = []
-with DICOMUtils.TemporaryDICOMDatabase() as db:
-    subfolders_next = [f for f in os.listdir(child_path) if os.path.isdir(os.path.join(child_path, f))]
-
-    for f in subfolders_next:
-        child_path_next = os.path.join(child_path, f)
-        DICOMUtils.importDicom(child_path_next, db)
-
-    patientUIDs = db.patients()
-    for patientUID in patientUIDs:
-        loadedNodeIDs.extend(DICOMUtils.loadPatientByUID(patientUID))
-        slicer.app.processEvents()
-
-    for cle, liste_valeurs in dic.items():
-        if i in liste_valeurs:
-            x= cle
+# Load datasets
+volume=slicer.util.loadVolume(volumePath)
+segmentation=slicer.util.loadSegmentation(segmentationPath)
 
 
-    create_model(reductionFactorValue=x)
-    run_sparsegrid(orientation,direction)
-    transform_volume_seg()
+# logic = slicer.util.getModuleLogic('SparseGridSimulation')
+# simulation_params = logic.getParameterNode()
 
-    start_time = time.time()
-    while time.time() - start_time < duration:
-        slicer.app.processEvents()
-        time.sleep(0.1)
+# sparseGrid_widget = slicer.util.getModuleWidget('SparseGridSimulation')
+# dic = {0.890 : [8, 43, 123, 149, 198], 0.899 : [162], 0.966 : [176],  0.934 : [22,31] , 0.936 : [101], 0.970 : [73],
+#         0.988 : [13, 88, 105, 135, 138, 146], 0.980 : [33, 60, 75, 82, 113, 132, 145, 156, 158, 166, 184],
+#         0.982 : [14, 110, 124, 142, 148, 150, 151, 172, 183, 185],
+#         0.978 : [15, 18, 50, 70, 97, 106, 107, 108, 112, 140, 143, 144, 165, 180, 194, 196],
+#         0.975 : [1, 10, 11, 19, 20, 37, 38, 39, 41, 42, 48, 55, 61, 64, 69, 91, 94, 111, 115, 119, 126, 128, 133, 159, 161, 174, 178, 179, 181, 190],
+#         0.985 : [2, 4, 7, 9, 16, 21, 23, 26, 28, 29, 34, 35, 36, 44, 47, 52, 54, 59, 66, 77, 78, 83, 85, 90, 92, 93, 95, 100, 102, 103, 117, 118, 121, 122, 137, 157, 164, 167, 169, 171, 182, 186, 189, 192],
+#         0.999 : [3, 5, 6, 12, 17, 25, 27, 30, 32, 40, 45, 46, 49, 51, 53, 56, 57, 58, 62, 63, 65, 67, 68, 71, 72, 74, 76, 79, 80, 81, 84, 86, 87, 89, 96, 98, 99, 104, 109, 114, 116, 120, 125, 127, 129, 130, 131,134, 136, 139, 141, 147, 152, 153, 154, 155, 160, 163, 168, 170, 173, 175, 177, 187, 188, 191, 193, 195, 197]}
 
-    sparseGrid_widget.stopSimulation()
-    sparseGrid_widget.cleanup()
-    newseg_filename = "Segmentation_modified" + "_ "+ orientation + "_" + direction + "_" + str(magnitude) + ".nii.gz"
-    newvolume_filename = "Volume_modified" + "_ "+ orientation + "_" + direction + "_" + str(magnitude) + ".nii.gz"
+# simulation_params.gravityMagnitude = magnitude
+# if i ==24:   #the file CRLM-CT-024 is missing from the TCIA database
+#     return
 
-    outputDir = "/home/eleonore/Downloads/TCIA_Nifti/CRLM-CT-1" + str(i).zfill(3)
-    save_scene(outputDir,newseg_filename,newvolume_filename)
-    slicer.mrmlScene.Clear(0)
+# parentPath = "/home/eleonore/Downloads/TCIA/Colorectal-Liver-Metastases-November-2022-manifest/Colorectal-Liver-Metastases/CRLM-CT-1"
+# parentPath += str(i).zfill(3)
+# subfolders = [f for f in os.listdir(parentPath) if os.path.isdir(os.path.join(parentPath, f))]
+
+# child_path = os.path.join(parentPath, subfolders[0])
+# loadedNodeIDs = []
+# with DICOMUtils.TemporaryDICOMDatabase() as db:
+#     subfolders_next = [f for f in os.listdir(child_path) if os.path.isdir(os.path.join(child_path, f))]
+
+#     for f in subfolders_next:
+#         child_path_next = os.path.join(child_path, f)
+#         DICOMUtils.importDicom(child_path_next, db)
+
+#     patientUIDs = db.patients()
+#     for patientUID in patientUIDs:
+#         loadedNodeIDs.extend(DICOMUtils.loadPatientByUID(patientUID))
+#         slicer.app.processEvents()
+
+#     for cle, liste_valeurs in dic.items():
+#         if i in liste_valeurs:
+#             x= cle
+
+
+#     create_model(reductionFactorValue=x)
+#     run_sparsegrid(orientation,direction)
+#     transform_volume_seg()
+
+#     start_time = time.time()
+#     while time.time() - start_time < duration:
+#         slicer.app.processEvents()
+#         time.sleep(0.1)
+
+#     sparseGrid_widget.stopSimulation()
+#     sparseGrid_widget.cleanup()
+#     newseg_filename = "Segmentation_modified" + "_ "+ orientation + "_" + direction + "_" + str(magnitude) + ".nii.gz"
+#     newvolume_filename = "Volume_modified" + "_ "+ orientation + "_" + direction + "_" + str(magnitude) + ".nii.gz"
+
+#     outputDir = "/home/eleonore/Downloads/TCIA_Nifti/CRLM-CT-1" + str(i).zfill(3)
+#     save_scene(outputDir,newseg_filename,newvolume_filename)
+#     slicer.mrmlScene.Clear(0)

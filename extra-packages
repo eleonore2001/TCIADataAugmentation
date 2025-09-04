@@ -10,6 +10,7 @@ libsm6
 libx11-6
 libxcb-shm0
 libxcb-xfixes0
+libxcb-xinerama0
 libxcomposite1
 libxcursor1
 libxdamage1

@@ -81,6 +81,22 @@ fi
 ########################################
 # PERFORM DATA AUGMENTATION
 ########################################
-for item in $(find ${OUTPUT_DIR} -type d -name "CRLM-*"); do
-    echo "Augmenting $item"
+
+
+for patient in $(find ${OUTPUT_DIR} -type d -name "CRLM-*" |head -n2); do
+    echo "Augmenting $patient"
+
+     volume_dir=$(find "${patient}" -maxdepth 2 -mindepth 2 -type d -not -name "*Segmentation*")
+     volume=$(find "${volume_dir}" -name "1.nii.gz")
+
+    segmentation_dir=$(find "${patient}" -type d -name "*Segmentation*")
+    segmentation=$(find "${segmentation_dir}" -name "1.nii.gz")
+
+    xvfb-run $SLICER_PATH --exit-after-startup \
+             --no-main-window \
+             --python-code "
+volumePath='${volume}';
+segmentationPath='${segmentation}';
+exec(open('/TCIA_data_augmentation.py').read())"
+
 done
