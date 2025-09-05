@@ -1,5 +1,7 @@
 ca-certificates
 curl
+gcc
+g++
 libasound2
 libfontconfig1
 libgl1-mesa-glx
@@ -20,6 +22,7 @@ libxrandr2
 libxrender1
 libxtst6
 libxtst6
+pkg-config
 python3-pip
 qt5dxcb-plugin
 xauth

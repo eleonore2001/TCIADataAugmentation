@@ -59,4 +59,5 @@ RUN chmod ug+x /run.sh
 
 COPY scripts/TCIA_data_augmentation.py /
 
+RUN /opt/Slicer-5.9.0-2025-06-27-linux-amd64/bin/../bin/PythonSlicer -m pip install pyacvd==0.3.1
 ENTRYPOINT ["/run.sh"]

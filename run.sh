@@ -92,11 +92,20 @@ for patient in $(find ${OUTPUT_DIR} -type d -name "CRLM-*" |head -n2); do
     segmentation_dir=$(find "${patient}" -type d -name "*Segmentation*")
     segmentation=$(find "${segmentation_dir}" -name "1.nii.gz")
 
-    xvfb-run $SLICER_PATH --exit-after-startup \
-             --no-main-window \
-             --python-code "
+    for orientation in "${ORIENTATIONS[@]}"; do
+        for direction in "${DIRECTIONS[@]}"; do
+            echo " -> orientation=$orientation, direction=$direction, first_time=$first_time"
+
+            xvfb-run $SLICER_PATH --exit-after-startup \
+                     --no-main-window \
+                     --python-code "
 volumePath='${volume}';
 segmentationPath='${segmentation}';
+orientation='$orientation';
+magnitude=$MAGNITUDE;
+duration=$DURATION;
+direction='$direction';
 exec(open('/TCIA_data_augmentation.py').read())"
-
+        done
+    done
 done
