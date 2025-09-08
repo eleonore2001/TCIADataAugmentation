@@ -240,7 +240,7 @@ sparseGrid.getParameterNode().modelNode = outputModel
 addGravityVector(orientation,direction)
 
 sparseGrid.addBoundaryROI()
-roiNode = slicer.util.getNode('MarkupsROI')
+roiNode = slicer.util.getNode('R')
 currentSize = roiNode.GetSize()
 newHeight = currentSize[2] * 0.1
 roiNode.SetSize(currentSize[0], currentSize[1], newHeight)

@@ -6,7 +6,7 @@
 ########################################
 
 # Applications
-SLICER_PATH="${SLICER_PATH:-/opt/Slicer-5.9.0-2025-06-27-linux-amd64/Slicer}"
+SLICER_PATH="${SLICER_PATH:-/opt/Slicer-5.9.0-2025-09-06-linux-amd64/Slicer}"
 NBIA_DOWNLOADER_PATH="${NBIA_DOWNLOADER_PATH:-/opt/nbia-data-retriever/bin/nbia-data-retriever}"
 SEGIMAGE2ITKIMAGE="/opt/dcmqi-1.3.4-linux/bin/segimage2itkimage"
 DCM2NIIX="dcm2niix"
