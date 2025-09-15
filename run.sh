@@ -83,7 +83,7 @@ fi
 ########################################
 
 
-for patient in $(find ${OUTPUT_DIR} -type d -name "CRLM-*" |head -n2); do
+for patient in $(find ${OUTPUT_DIR} -type d -name "CRLM-*"); do
     echo "Augmenting $patient"
 
      volume_dir=$(find "${patient}" -maxdepth 2 -mindepth 2 -type d -not -name "*Segmentation*")

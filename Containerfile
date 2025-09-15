@@ -34,7 +34,7 @@ RUN curl -LO https://github.com/CBIIT/NBIA-TCIA/releases/download/DR-4_4_3-TCIA-
 RUN curl -L https://download.slicer.org/bitstream/68bd1676c238353eb5cdb739 | tar xz -C /opt
 
 #Download Slicer-SOFA
-RUN curl -LO https://github.com/Slicer/SlicerSOFA/releases/download/collection-archives/33918-linux-amd64-SlicerSOFA-git7374f65-2025-09-04.tar.gz
+RUN curl -LO https://github.com/Slicer/SlicerSOFA/releases/download/collection-archives/33918-linux-amd64-SlicerSOFA-git0aaef9e-2025-09-13.tar.gz
 
 #Copy QuantitativeReporting Slicer Extension
 COPY packages/30822-linux-amd64-QuantitativeReporting-gitd4892cf-2022-04-08.tar.gz /
