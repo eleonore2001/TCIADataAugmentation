@@ -96,11 +96,21 @@ for patient in $(find ${OUTPUT_DIR} -type d -name "CRLM-*"); do
         for direction in "${DIRECTIONS[@]}"; do
             echo " -> orientation=$orientation, direction=$direction, first_time=$first_time"
 
+
+            outputVolumePath="${volume/.nii.gz/_${orientation}_${direction}_${magnitude}_${DURATION}.nii.gz}"
+            outputSegmentationPath="${segmentation/.nii.gz/_${orientation}_${direction}_${magnitude}_${DURATION}.nii.gz}"
+
+            echo "///////////////////////////////////////////////"
+            echo "${outputVolumePath}"
+            echo "${outputSegmentationPath}"
+
             xvfb-run $SLICER_PATH --exit-after-startup \
                      --no-main-window \
                      --python-code "
-volumePath='${volume}';
-segmentationPath='${segmentation}';
+inputVolumePath='${volume}';
+inputSegmentationPath='${segmentation}';
+outputVolumePath='${outputVolumePath}';
+outputSegmentationPath='${outputSegmentationPath}';
 orientation='$orientation';
 magnitude=$MAGNITUDE;
 duration=$DURATION;

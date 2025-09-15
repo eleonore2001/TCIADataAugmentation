@@ -99,6 +99,7 @@ def clean_segment_inplace(segNode, segmentID):
 #         slicer.util.saveNode(labelmapVolumeNode, filepath)
 
 #     segmentationNode.HardenTransform()
+
 #     labelmapVolumeNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode")
 #     slicer.modules.segmentations.logic().ExportAllSegmentsToLabelmapNode(segmentationNode, labelmapVolumeNode)
 #     filename = modifiedseg_filename
@@ -195,23 +196,23 @@ def addGravityVector(orientation,direction):
 # ############################
 
 # --- Load volume and segmentation ---
-volumeNode=slicer.util.loadVolume(volumePath)
-segmentationNode=slicer.util.loadSegmentation(segmentationPath)
+volumeNode=slicer.util.loadVolume(inputVolumePath)
+segmentationNode=slicer.util.loadSegmentation(inputSegmentationPath)
 
-# --- Clean the labelmap (largest island) ---
-keepLargestOnly = True         # True = keep only largest component
-minSizeMM3 = 5.0               # remove islands smaller than this (0=off) AFTER keeping largest
-medianMM = 1.0                 # optional median smoothing before CC (0=off)
-closingMM = 0.0                # optional closing (careful: may expand); 0=off
+# # --- Clean the labelmap (largest island) ---
+# keepLargestOnly = True         # True = keep only largest component
+# minSizeMM3 = 5.0               # remove islands smaller than this (0=off) AFTER keeping largest
+# medianMM = 1.0                 # optional median smoothing before CC (0=off)
+# closingMM = 0.0                # optional closing (careful: may expand); 0=off
 
-segmentation = segmentationNode.GetSegmentation()
-segmentIDs = [segmentation.GetNthSegmentID(i) for i in range(segmentation.GetNumberOfSegments())]
+# segmentation = segmentationNode.GetSegmentation()
+# segmentIDs = [segmentation.GetNthSegmentID(i) for i in range(segmentation.GetNumberOfSegments())]
 
-for sid in segmentIDs:
-    print(f"[largest-island] Cleaning segment: {segmentation.GetSegment(sid).GetName()}")
-    clean_segment_inplace(segmentationNode, sid)
+# for sid in segmentIDs:
+#     print(f"[largest-island] Cleaning segment: {segmentation.GetSegment(sid).GetName()}")
+#     clean_segment_inplace(segmentationNode, sid)
 
-print("Done cleaning segment")
+# print("Done cleaning segment")
 
 # --- Convert clean segmentation to mesh ---
 
@@ -219,15 +220,15 @@ slicer.modules.segmentations.logic().ExportVisibleSegmentsToModels(segmentationN
 inputModel = slicer.util.getNode("Segment_1")
 outputModel = slicer.mrmlScene.AddNewNodeByClass('vtkMRMLModelNode')
 surfaceToolboxLogic = slicer.util.getModuleLogic('SurfaceToolbox')
-slicer.app.processEvents()
+#slicer.app.processEvents()
 surfaceToolboxLogic.clean(inputModel,outputModel)
-slicer.app.processEvents()
+#slicer.app.processEvents()
 surfaceToolboxLogic.decimate(outputModel, outputModel, reductionFactor=0.9, decimateBoundary=True, lossless=False, aggressiveness=7.0)
 slicer.app.processEvents()
-surfaceToolboxLogic.smooth(outputModel, outputModel, method='Taubin', iterations=30, laplaceRelaxationFactor=0.5, taubinPassBand=0.1, boundarySmoothing=True)
-slicer.app.processEvents()
-surfaceToolboxLogic.remesh(outputModel,outputModel,subdivide=1)
-slicer.util.saveNode(outputModel, "/tmp/a.vtk")
+# surfaceToolboxLogic.smooth(outputModel, outputModel, method='Taubin', iterations=30, laplaceRelaxationFactor=0.5, taubinPassBand=0.1, boundarySmoothing=True)
+# slicer.app.processEvents()
+# surfaceToolboxLogic.remesh(outputModel,outputModel,subdivide=1)
+# slicer.util.saveNode(outputModel, "/tmp/a.vtk")
 
 print("Done converting to triangular mesh")
 
@@ -253,60 +254,14 @@ sparseGrid.addGridTransformNode()
 
 sparseGrid.startSimulation()
 
+# --- Save the transformed volumes ---
+transformNode = sparseGrid.getParameterNode().gridTransformNode
+volumeNode.SetAndObserveTransformNodeID(transformNode.GetID())
+volumeNode.HardenTransform()
+slicer.util.saveNode(volumeNode, outputVolumePath)
 
-# logic = slicer.util.getModuleLogic('SparseGridSimulation')
-# simulation_params = logic.getParameterNode()
-
-# sparseGrid_widget = slicer.util.getModuleWidget('SparseGridSimulation')
-# dic = {0.890 : [8, 43, 123, 149, 198], 0.899 : [162], 0.966 : [176],  0.934 : [22,31] , 0.936 : [101], 0.970 : [73],
-#         0.988 : [13, 88, 105, 135, 138, 146], 0.980 : [33, 60, 75, 82, 113, 132, 145, 156, 158, 166, 184],
-#         0.982 : [14, 110, 124, 142, 148, 150, 151, 172, 183, 185],
-#         0.978 : [15, 18, 50, 70, 97, 106, 107, 108, 112, 140, 143, 144, 165, 180, 194, 196],
-#         0.975 : [1, 10, 11, 19, 20, 37, 38, 39, 41, 42, 48, 55, 61, 64, 69, 91, 94, 111, 115, 119, 126, 128, 133, 159, 161, 174, 178, 179, 181, 190],
-#         0.985 : [2, 4, 7, 9, 16, 21, 23, 26, 28, 29, 34, 35, 36, 44, 47, 52, 54, 59, 66, 77, 78, 83, 85, 90, 92, 93, 95, 100, 102, 103, 117, 118, 121, 122, 137, 157, 164, 167, 169, 171, 182, 186, 189, 192],
-#         0.999 : [3, 5, 6, 12, 17, 25, 27, 30, 32, 40, 45, 46, 49, 51, 53, 56, 57, 58, 62, 63, 65, 67, 68, 71, 72, 74, 76, 79, 80, 81, 84, 86, 87, 89, 96, 98, 99, 104, 109, 114, 116, 120, 125, 127, 129, 130, 131,134, 136, 139, 141, 147, 152, 153, 154, 155, 160, 163, 168, 170, 173, 175, 177, 187, 188, 191, 193, 195, 197]}
-
-# simulation_params.gravityMagnitude = magnitude
-# if i ==24:   #the file CRLM-CT-024 is missing from the TCIA database
-#     return
-
-# parentPath = "/home/eleonore/Downloads/TCIA/Colorectal-Liver-Metastases-November-2022-manifest/Colorectal-Liver-Metastases/CRLM-CT-1"
-# parentPath += str(i).zfill(3)
-# subfolders = [f for f in os.listdir(parentPath) if os.path.isdir(os.path.join(parentPath, f))]
-
-# child_path = os.path.join(parentPath, subfolders[0])
-# loadedNodeIDs = []
-# with DICOMUtils.TemporaryDICOMDatabase() as db:
-#     subfolders_next = [f for f in os.listdir(child_path) if os.path.isdir(os.path.join(child_path, f))]
-
-#     for f in subfolders_next:
-#         child_path_next = os.path.join(child_path, f)
-#         DICOMUtils.importDicom(child_path_next, db)
-
-#     patientUIDs = db.patients()
-#     for patientUID in patientUIDs:
-#         loadedNodeIDs.extend(DICOMUtils.loadPatientByUID(patientUID))
-#         slicer.app.processEvents()
-
-#     for cle, liste_valeurs in dic.items():
-#         if i in liste_valeurs:
-#             x= cle
-
-
-#     create_model(reductionFactorValue=x)
-#     run_sparsegrid(orientation,direction)
-#     transform_volume_seg()
-
-#     start_time = time.time()
-#     while time.time() - start_time < duration:
-#         slicer.app.processEvents()
-#         time.sleep(0.1)
-
-#     sparseGrid_widget.stopSimulation()
-#     sparseGrid_widget.cleanup()
-#     newseg_filename = "Segmentation_modified" + "_ "+ orientation + "_" + direction + "_" + str(magnitude) + ".nii.gz"
-#     newvolume_filename = "Volume_modified" + "_ "+ orientation + "_" + direction + "_" + str(magnitude) + ".nii.gz"
-
-#     outputDir = "/home/eleonore/Downloads/TCIA_Nifti/CRLM-CT-1" + str(i).zfill(3)
-#     save_scene(outputDir,newseg_filename,newvolume_filename)
-#     slicer.mrmlScene.Clear(0)
+labelmapVolumeNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode")
+slicer.modules.segmentations.logic().ExportAllSegmentsToLabelmapNode(segmentationNode, labelmapVolumeNode)
+labelmapVolumeNode.SetAndObserveTransformNodeID(transformNode.GetID())
+labelmapVolumeNode.HardenTransform()
+slicer.util.saveNode(labelmapVolumeNode, outputSegmentationPath)
