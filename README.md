@@ -1,30 +1,50 @@
 
 # Data Augmentation for the TCIA dataset
 
-This repository is aimed at providing a pipeline to augment the TCIA dataset. This augmentation is made with the Slicer SOFA extension, using gravity to deform the images. 
+This repository provides a containerized pipeline to augment data from the Colorectal-Liver TCIA dataset ([https://www.cancerimagingarchive.net/collection/colorectal-liver-metastases/](https://www.cancerimagingarchive.net/collection/colorectal-liver-metastases/)). This augmentation is made with the 3D Slicer + SlicerSOFA extension, using an external force to deform a model and transfer the deformation to medical images and segmentations.
 
 ## How it works
-The main script creates a 3D model based on the segmentations of the liver / tumors / veins. Using the Slicer SOFA extension, a force (gravity) is applied to the model. The resulting transformation is retrieved and applied to the volume and the segmentation. 6 different vectors are applied to each volume / segmentations. You can change two parameters  : the magnitude of the gravity vector and the time for which the simulation is running. 
 
+Clone this repository:
 
-## How you should use it : 
-* Download the container.
-* Download the dataset using this command (inside the container).
-
-``` sh
-/opt/nbia-data-retriever/bin/nbia-data-retriever --cli /data/Colorectal-Liver-Metastases-November-2022-manifest.tcia -d ~/Downloads/TCIA
+```bash
+git clone https://github.com/OUH-MeshLab/TCIADataAugmentation ~/TCIADataAugmentation
 ```
 
-* You need to manually uninstall and reinstall the **Quantitave Reporting** Slicer extension. 
+Build the container (while here `podman` is used, `docker` can be used in a similar way):
 
-* Convert the DICOM database to Nifti using the **dicom2nifti.py** script. This will create a new folder with the unmodified dataset. You'll need to change the lines 4 and 5 to match your directories. You also need to change the lines 12 and 135 of the **TCIA_data_augmentation.py** to match. 
+```bash
+cd ~/TCIADataAugmentation
+podman build . -t tcia
+```
+
+Run the container:
+
+```bash
+podman run -v ~/data/input:/data/input -v ~/data/output:/data/output -e DOWNLOAD_DATASET_AND_AGREE_LICENSE=1 tcia
+```
+
+This command will (1) pull the dataset and save it to `~/data/input`; (2) perform a DICOM-NIFTI conversion and save it to '~/data/output'; and (3) start the simulation, which results will be stored in `~/data/output`. *NOTE: by setting `DOWNLOAD_DATASET_AND_AGREE_LICENSE=1` you are agreein to the TCIA dataset (check [https://www.cancerimagingarchive.net/collection/colorectal-liver-metastases/](https://www.cancerimagingarchive.net/collection/colorectal-liver-metastases/))
+
+If the data was previously downloaded to `~/data/input` it is possible to set `DOWNLOAD_DATASET_AND_AGREE_LICENSE=0` to avoid re-downloads:
+
+```bash
+podman run -v ~/data/input:/data/input -v ~/data/output:/data/output -e DOWNLOAD_DATASET_AND_AGREE_LICENSE=0 tcia
+```
+
+If the data was previously converted`~/data/input` it is possible to set `CONVERT_DATASET=0` to avoid re-converting the dataset :
+
+```bash
+podman run -v ~/data/input:/data/input -v ~/data/output:/data/output -e DOWNLOAD_DATASET_AND_AGREE_LICENSE=0 -e CONVERT_DATASET=0 tcia
+```
 
 
 
-* To perform the data augmentation you'll need to run the **TCIA_data_augmentation.sh** script in your terminal. You can change the parameters (value of the magnitude / duration of simulation) at the beggining of the file. 
+Beyond the DICOM-NIFTI conversion, the pipeline creates 3D surface models based on the segmentations of the liver / tumors. Using the Slicer SOFA extension these surface models are converted to a sparse grid representation (hexahedra). An external force is applied to the model in multiple configurations. The resulting transformation is retrieved and applied to the volume and the segmentation. 6 different vectors are applied to each volume / segmentations. It is possible to change two parameters  : the magnitude of the gravity vector and the time for which the simulation is running.
+
 
 ## Results
-These are examples of how a volume and segmentations can be modified using theses scripts. I used a magnitude of 800 and a time of 10 seconds to achieve these results. 
+These are examples of how a volume and segmentations can be modified using theses scripts. I used a magnitude of 800 and a time of 10 seconds to achieve these results.
 
 | Image 1 | Image 2 |
 |---------|---------|
@@ -35,4 +55,3 @@ These are examples of how a volume and segmentations can be modified using these
 |---------|---------|
 | ![Image 3](./scripts/image-3.png)| ![Image 4](./scripts/image-4.png)|
 | **Deformation with a vector going towards left** | **Deformation with a vector going up** |
-
