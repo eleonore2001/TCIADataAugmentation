@@ -31,8 +31,7 @@ RUN curl -LO https://github.com/CBIIT/NBIA-TCIA/releases/download/DR-4_4_3-TCIA-
 RUN curl -L https://slicer-packages.kitware.com/api/v1/file/hashsum/SHA512/426472b8421f947743a051612407a8e777069f576a1cc3ed0870b28b3602e9e0c0e7c67d798b39f8aca125c3610f8f377c076f3094f87672b76cc0fb40cfd8e8/download | tar xz -C /opt
 
 #Download Slicer-SOFA
-RUN curl -L https://slicer-packages.kitware.com/api/v1/file/hashsum/SHA512/e77abd5e8d7b59088da65ae6b8b872b4aa5ead6acb47e5d4e3231db7a76ca41b6f8df4a9ac8352f1a6c5c46b932099fbb65ed7cbc98f36690b5379c7b4a478c3/download > 33996-linux-amd64-SlicerSOFA-gitd61d908-2025-09-30.tar.gz
-
+RUN curl -L https://slicer-packages.kitware.com/api/v1/file/hashsum/SHA512/e77abd5e8d7b59088da65ae6b8b872b4aa5ead6acb47e5d4e3231db7a76ca41b6f8df4a9ac8352f1a6c5c46b932099fbb65ed7cbc98f36690b5379c7b4a478c3/download > /33996-SlicerSOFA-gitd61d908-g++-64bits-Qt5.15-Release.tar.gz
 
 #Copy QuantitativeReporting Slicer Extension
 COPY packages/30822-linux-amd64-QuantitativeReporting-gitd4892cf-2022-04-08.tar.gz /
