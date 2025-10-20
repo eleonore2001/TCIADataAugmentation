@@ -27,8 +27,8 @@ RUN rm /pip-packages
 RUN curl -LO https://github.com/CBIIT/NBIA-TCIA/releases/download/DR-4_4_3-TCIA-20240916-1/nbia-data-retriever_4.4.3-1_amd64.deb && \
     dpkg -x nbia-data-retriever_4.4.3-1_amd64.deb /
 
-
-RUN curl -L https://slicer-packages.kitware.com/api/v1/file/hashsum/SHA512/426472b8421f947743a051612407a8e777069f576a1cc3ed0870b28b3602e9e0c0e7c67d798b39f8aca125c3610f8f377c076f3094f87672b76cc0fb40cfd8e8/download | tar xz -C /opt
+# Download and unpack Slicer
+RUN curl -L https://slicer-packages.kitware.com/api/v1/file/hashsum/SHA512/de2b0e69b53a5f9db8328f5b7d2ac82d71bfff1ce3e380455a4624483c0f0c22a12c1d1027be5189b9af4b54174ce4cddae26146c0738e713dbd6c47404dd8dd/download | tar xz -C /opt
 
 #Download Slicer-SOFA
 RUN curl -L https://slicer-packages.kitware.com/api/v1/file/hashsum/SHA512/e77abd5e8d7b59088da65ae6b8b872b4aa5ead6acb47e5d4e3231db7a76ca41b6f8df4a9ac8352f1a6c5c46b932099fbb65ed7cbc98f36690b5379c7b4a478c3/download > /33996-SlicerSOFA-gitd61d908-g++-64bits-Qt5.15-Release.tar.gz
@@ -41,11 +41,11 @@ COPY packages/30822-linux-amd64-QuantitativeReporting-gitd4892cf-2022-04-08.tar.
 #      A workaround is to launch Slicer inside the container and install the QuantitativeReporting there
 COPY scripts/slicer_install_dependencies.py /
 RUN xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' \
-    /opt/Slicer-5.9.0-2025-10-16-linux-amd64/Slicer --no-main-window --launcher-no-splash --python-script /slicer_install_dependencies.py
+    /opt/Slicer-5.9.0-2025-10-13-linux-amd64/Slicer --no-main-window --launcher-no-splash --python-script /slicer_install_dependencies.py
 RUN rm /slicer_install_dependencies.py
 
 RUN xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' \
-    /opt/Slicer-5.9.0-2025-10-16-linux-amd64/Slicer --launch PythonSlicer -m pip install pyacvd==0.3.1
+    /opt/Slicer-5.9.0-2025-10-13-linux-amd64/Slicer --launch PythonSlicer -m pip install pyacvd==0.3.1
 
 # Change permissions of /opt/Slicer to make it writable for the user running the container
 RUN chmod -R ugo+w /opt/Slicer-*

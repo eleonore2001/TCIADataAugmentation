@@ -6,7 +6,7 @@
 ########################################
 
 # Applications
-SLICER_PATH="${SLICER_PATH:-/opt/Slicer-5.9.0-2025-09-06-linux-amd64/Slicer}"
+SLICER_PATH="${SLICER_PATH:-/opt/Slicer-5.9.0-2025-10-13-linux-amd64/Slicer}"
 NBIA_DOWNLOADER_PATH="${NBIA_DOWNLOADER_PATH:-/opt/nbia-data-retriever/bin/nbia-data-retriever}"
 SEGIMAGE2ITKIMAGE="/opt/dcmqi-1.3.4-linux/bin/segimage2itkimage"
 DCM2NIIX="dcm2niix"
@@ -21,7 +21,7 @@ OUTPUT_DIR="${OUTPUT_DIR:-/data/output}"
 # Simulation parameters
 [ -z "${ORIENTATIONS+x}" ] && ORIENTATIONS=("x" "y" "z")
 [ -z "${DIRECTIONS+x}" ] && DIRECTIONS=("positive" "negative")
-MAGNITUDE="${MAGNITUDE:-700}"
+MAGNITUDE="${MAGNITUDE:-700000}"
 DURATION="${DURATION:-7}"
 
 #THISSCRIPT_PATH="$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)"
