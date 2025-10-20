@@ -2,7 +2,7 @@ import slicer
 import os
 
 # Define the path to the Sofa extension tar package
-sofa_tar_path = "/33918-linux-amd64-SlicerSOFA-git311e11a-2025-09-15.tar.gz"
+sofa_tar_path =  "/33996-linux-amd64-SlicerSOFA-gitd61d908-2025-09-30.tar.gz"
 
 # Define the path to the QuantitativeReporting extension tar package
 quantitative_reporting_tar_path = "/30822-linux-amd64-QuantitativeReporting-gitd4892cf-2022-04-08.tar.gz"

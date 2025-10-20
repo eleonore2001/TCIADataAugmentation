@@ -27,14 +27,12 @@ RUN rm /pip-packages
 RUN curl -LO https://github.com/CBIIT/NBIA-TCIA/releases/download/DR-4_4_3-TCIA-20240916-1/nbia-data-retriever_4.4.3-1_amd64.deb && \
     dpkg -x nbia-data-retriever_4.4.3-1_amd64.deb /
 
-#Download and install 3D Slicer 5.9.0
-#RUN curl -L https://download.slicer.org/bitstream/685f7312a2a452fc449ea770 | tar xz -C /opt
 
-
-RUN curl -L https://download.slicer.org/bitstream/68bd1676c238353eb5cdb739 | tar xz -C /opt
+RUN curl -L https://slicer-packages.kitware.com/api/v1/file/hashsum/SHA512/426472b8421f947743a051612407a8e777069f576a1cc3ed0870b28b3602e9e0c0e7c67d798b39f8aca125c3610f8f377c076f3094f87672b76cc0fb40cfd8e8/download | tar xz -C /opt
 
 #Download Slicer-SOFA
-RUN curl -LO https://github.com/Slicer/SlicerSOFA/releases/download/collection-archives/33918-linux-amd64-SlicerSOFA-git311e11a-2025-09-15.tar.gz
+RUN curl -L https://slicer-packages.kitware.com/api/v1/file/hashsum/SHA512/e77abd5e8d7b59088da65ae6b8b872b4aa5ead6acb47e5d4e3231db7a76ca41b6f8df4a9ac8352f1a6c5c46b932099fbb65ed7cbc98f36690b5379c7b4a478c3/download > 33996-linux-amd64-SlicerSOFA-gitd61d908-2025-09-30.tar.gz
+
 
 #Copy QuantitativeReporting Slicer Extension
 COPY packages/30822-linux-amd64-QuantitativeReporting-gitd4892cf-2022-04-08.tar.gz /
@@ -44,11 +42,11 @@ COPY packages/30822-linux-amd64-QuantitativeReporting-gitd4892cf-2022-04-08.tar.
 #      A workaround is to launch Slicer inside the container and install the QuantitativeReporting there
 COPY scripts/slicer_install_dependencies.py /
 RUN xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' \
-    /opt/Slicer-5.9.0-2025-09-06-linux-amd64/Slicer --no-main-window --launcher-no-splash --python-script /slicer_install_dependencies.py
+    /opt/Slicer-5.9.0-2025-10-16-linux-amd64/Slicer --no-main-window --launcher-no-splash --python-script /slicer_install_dependencies.py
 RUN rm /slicer_install_dependencies.py
 
 RUN xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' \
-    /opt/Slicer-5.9.0-2025-09-06-linux-amd64/Slicer --launch PythonSlicer -m pip install pyacvd==0.3.1
+    /opt/Slicer-5.9.0-2025-10-16-linux-amd64/Slicer --launch PythonSlicer -m pip install pyacvd==0.3.1
 
 # Change permissions of /opt/Slicer to make it writable for the user running the container
 RUN chmod -R ugo+w /opt/Slicer-*
